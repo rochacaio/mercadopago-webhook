@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --watch src --ignore-watch .next --ignore-watch dist --ignore-watch node_modules src/server.ts",
-    "build": "next build",
-    "start": "node .next/standalone/server.js"
+    "build": "tsc -p tsconfig.build.json && next build",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "axios": "^1.11.0",
