@@ -8,15 +8,11 @@ type messageProps = {
 class ReceivePaymentService {
 
     async index(data: object): Promise<{ message: string, data?: object }> {
-        console.log("DATA ====>>>>>> ")
-        console.log(data)
-        console.log("DATA ====>>>>>> ")
         // @ts-ignore
         if (data.type === "payment" && data?.id) {
             // @ts-ignore
             const paymentId = data.data.id;
             try {
-                console.log(paymentId)
                 const response = await axios.get(`${process.env.MP_URL}payments/${paymentId}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,16 +21,13 @@ class ReceivePaymentService {
             });
 
             const payment = response.data;
-            console.log(payment)
             const value = new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL"
                 }).format(payment.transaction_amount);
 
                 const users = await this.getUsersToNotificate();
-                console.log("USERS ====>>>>>> ")
-                console.log(users)
-                console.log("USERS ====>>>>>> ")
+
                 if(users.length > 0 && payment.status === 'approved') {
                     await this.sendTelegramMessage({
                         message: `Pagamento no valor de ${value} recebido`,
@@ -77,18 +70,14 @@ class ReceivePaymentService {
 
     async sendTelegramMessage(data: messageProps): Promise<void> {
         const telegramApiUrl = `${process.env.TELEGRAM_URL}${process.env.TELEGRAM_AUTH_TOKEN}/sendMessage`;
-        console.log("telegramApiUrl ====>>>>>> ")
-        console.log(telegramApiUrl)
-        console.log("telegramApiUrl ====>>>>>> ")
+
         for (const userId of data.users) {
             // if([8069348563].includes(userId)) continue;
             const params = {
                 chat_id: userId,
                 text: data.message,
             };
-            console.log("params ====>>>>>> ")
-            console.log(params)
-            console.log("params ====>>>>>> ")
+
             try {
                 await axios.post(telegramApiUrl, params);
                 console.log(`Mensagem enviada para o usuário ${userId}`);
@@ -109,9 +98,9 @@ class ReceivePaymentService {
                 notification_url: process.env.WEBHOOK_URL,
                 installments: 1,
                 payer: {
-                    email: "123caio456@example.com",
-                    first_name: "Caio",
-                    last_name: "ACDC",
+                    email: "minerocoins@example.com",
+                    first_name: "Mineiro",
+                    last_name: "Coins",
                     identification: {
                         type: "CPF",
                         number: "12345678909"
