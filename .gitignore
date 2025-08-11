@@ -1,0 +1,5 @@
+src/db.ts
+.env
+node_modules
+dist
+.next
