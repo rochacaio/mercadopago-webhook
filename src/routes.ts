@@ -9,6 +9,8 @@ const router = Router();
 const webHookController = new WebHookController();
 
 router.post('/receive-payment',webHookController.handle)
+router.get('/receive-payment', (_req, res) => res.status(200).send('ok'));
+
 router.post('/create-payment',webHookController.createPix)
 router.post("/saveContact", webHookController.saveUser);
 router.get("/telegram-users", async (req, res) => {
