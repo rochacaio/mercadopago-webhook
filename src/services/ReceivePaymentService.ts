@@ -8,6 +8,7 @@ type messageProps = {
 class ReceivePaymentService {
 
     async index(data: object): Promise<{ message: string, data?: object }> {
+        console.log(data)
         if(data === undefined) return { message: "retorno indefinido" }
         // @ts-ignore
         const payment = data.payment;
