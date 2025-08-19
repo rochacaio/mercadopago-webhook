@@ -10,37 +10,37 @@ class ReceivePaymentService {
     async index(data: object): Promise<{ message: string, data?: object }> {
         // @ts-ignore
         console.log(data);
-        if (data.type === "payment" && data?.id) {
-            // @ts-ignore
-            const paymentId = data.data.id;
-            try {
-                const response = await axios.get(`${process.env.MP_URL}payments/${paymentId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`
-                }
-            });
-
-            const payment = response.data;
-            const value = new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL"
-                }).format(payment.transaction_amount);
-
-                const users = await this.getUsersToNotificate();
-
-                if(users.length > 0 && payment.status === 'approved') {
-                    await this.sendTelegramMessage({
-                        message: `Pagamento no valor de ${value} recebido`,
-                        users,
-                    })
-                }
-
-                return {message: "mensagem enviada!", data: payment}
-            } catch (error) {
-                console.log('Erro ao capturar pagamento:', error);
-            }
-        }
+        // if (data.type === "payment" && data?.id) {
+        //     // @ts-ignore
+        //     const paymentId = data.data.id;
+        //     try {
+        //         const response = await axios.get(`${process.env.MP_URL}payments/${paymentId}`, {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`
+        //         }
+        //     });
+        //
+        //     const payment = response.data;
+        //     const value = new Intl.NumberFormat("pt-BR", {
+        //             style: "currency",
+        //             currency: "BRL"
+        //         }).format(payment.transaction_amount);
+        //
+        //         const users = await this.getUsersToNotificate();
+        //
+        //         if(users.length > 0 && payment.status === 'approved') {
+        //             await this.sendTelegramMessage({
+        //                 message: `Pagamento no valor de ${value} recebido`,
+        //                 users,
+        //             })
+        //         }
+        //
+        //         return {message: "mensagem enviada!", data: payment}
+        //     } catch (error) {
+        //         console.log('Erro ao capturar pagamento:', error);
+        //     }
+        // }
 
         return { message: "mensagem enviada!" };
     }
