@@ -9,14 +9,15 @@ class ReceivePaymentService {
 
     async index(data: object): Promise<{ message: string, data?: object }> {
         // @ts-ignore
-        console.log(data);
-        if (data.status === "RECEIVED") {
+        const payment = data.payment;
+
+        if (payment.status === "RECEIVED") {
             // @ts-ignore
             try {
             const value = new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL"
-                }).format(data.value);
+                }).format(payment.value);
 
                 const users = await this.getUsersToNotificate();
 
