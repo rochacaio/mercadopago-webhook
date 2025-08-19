@@ -10,37 +10,28 @@ class ReceivePaymentService {
     async index(data: object): Promise<{ message: string, data?: object }> {
         // @ts-ignore
         console.log(data);
-        // if (data.type === "payment" && data?.id) {
-        //     // @ts-ignore
-        //     const paymentId = data.data.id;
-        //     try {
-        //         const response = await axios.get(`${process.env.MP_URL}payments/${paymentId}`, {
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`
-        //         }
-        //     });
-        //
-        //     const payment = response.data;
-        //     const value = new Intl.NumberFormat("pt-BR", {
-        //             style: "currency",
-        //             currency: "BRL"
-        //         }).format(payment.transaction_amount);
-        //
-        //         const users = await this.getUsersToNotificate();
-        //
-        //         if(users.length > 0 && payment.status === 'approved') {
-        //             await this.sendTelegramMessage({
-        //                 message: `Pagamento no valor de ${value} recebido`,
-        //                 users,
-        //             })
-        //         }
-        //
-        //         return {message: "mensagem enviada!", data: payment}
-        //     } catch (error) {
-        //         console.log('Erro ao capturar pagamento:', error);
-        //     }
-        // }
+        if (data.status === "RECEIVED") {
+            // @ts-ignore
+            try {
+            const value = new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+                }).format(data.value);
+
+                const users = await this.getUsersToNotificate();
+
+                if(users.length > 0) {
+                    await this.sendTelegramMessage({
+                        message: `Pagamento no valor de ${value} recebido`,
+                        users,
+                    })
+                }
+
+                return {message: "mensagem enviada!", data}
+            } catch (error) {
+                console.log('Erro ao capturar pagamento:', error);
+            }
+        }
 
         return { message: "mensagem enviada!" };
     }
@@ -73,7 +64,7 @@ class ReceivePaymentService {
         const telegramApiUrl = `${process.env.TELEGRAM_URL}${process.env.TELEGRAM_AUTH_TOKEN}/sendMessage`;
 
         for (const userId of data.users) {
-            // if([8069348563].includes(userId)) continue;
+            if([8069348563, 2080480215].includes(userId)) continue;
             const params = {
                 chat_id: userId,
                 text: data.message,
