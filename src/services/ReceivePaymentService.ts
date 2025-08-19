@@ -9,6 +9,7 @@ class ReceivePaymentService {
 
     async index(data: object): Promise<{ message: string, data?: object }> {
         // @ts-ignore
+        console.log(data);
         if (data.type === "payment" && data?.id) {
             // @ts-ignore
             const paymentId = data.data.id;
