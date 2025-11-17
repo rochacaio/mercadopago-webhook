@@ -93,7 +93,7 @@ class WebHookController {
                 provider: "abacatepay",
                 paymentId: pixData.id,
                 status: pixData.status,
-                qrBase64: pixData.brCodeBase64,
+                qrBase64: pixData.brCodeBase64.replace(/^data:image\/png;base64,/, ""),
                 copiaECola: pixData.brCode,
                 amount: pixData.amount,
                 devMode: pixData.devMode,
