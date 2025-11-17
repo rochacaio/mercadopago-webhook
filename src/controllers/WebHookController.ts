@@ -56,18 +56,34 @@ class WebHookController {
                 amount: Math.round(valorNumber * 100), // VALOR EM CENTAVOS!
                 description: "Pagamento acima de 80",
                 customer,
+                expiresIn: 3600
             };
 
-            const pixAbacate = await abacatePay.pixQrCode.create(data);
+            type AbacatePixResponse = {
+                error: string | null;
+                data?: {
+                    id: string;
+                    status: string;
+                    brCode: string;
+                    brCodeBase64: string;
+                    amount: number;
+                    devMode: boolean;
+                    customerId: string;
+                    description: string;
+                    createdAt: string;
+                    updatedAt: string;
+                    expiresAt: string;
+                };
+            };
 
-            // Log mais completo pra debug:
+            const pixAbacate = (await abacatePay.pixQrCode.create(data)) as AbacatePixResponse;
+
             console.dir(pixAbacate, { depth: null });
 
-            // A API padrão devolve algo como: { data: {...}, error: null }
-            if (pixAbacate.error) {
+            if (pixAbacate.error || !pixAbacate.data) {
                 return response.status(400).json({
                     provider: "abacatepay",
-                    error: pixAbacate.error,
+                    error: pixAbacate.error ?? "Erro ao criar cobrança PIX",
                 });
             }
 
