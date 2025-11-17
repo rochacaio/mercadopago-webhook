@@ -3,3 +3,4 @@ src/db.ts
 node_modules
 dist
 .next
+src/cora_credentials
