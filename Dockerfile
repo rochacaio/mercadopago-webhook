@@ -1,23 +1,29 @@
-# ---------- BUILD ----------
-FROM node:20-alpine AS builder
+# ---------- BASE ----------
+FROM node:20-alpine AS base
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm ci
 
+# ---------- DEV ----------
+FROM base AS dev
+ENV NODE_ENV=development
+RUN npm install
 COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
 
+# ---------- BUILD ----------
+FROM base AS builder
+RUN npm ci
+COPY . .
 RUN npm run build
 
-
-FROM node:20-alpine AS prod
-WORKDIR /app
+# ---------- PROD ----------
+FROM base AS prod
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
