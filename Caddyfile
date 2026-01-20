@@ -1,0 +1,8 @@
+www.mineirotransfer.com.br {
+    redir https://mineirotransfer.com.br{uri}
+}
+
+mineirotransfer.com.br {
+    encode gzip
+    reverse_proxy app:3000
+}
